@@ -1,10 +1,8 @@
 import {Body,Controller,Delete,Get,Param,ParseIntPipe,Patch,Post,UseGuards,} from '@nestjs/common';
 import { Role } from '@prisma/client';
-
 import { KostService } from './kost.service';
 import { CreateKostDto } from './dto/create-kost.dto';
 import { UpdateKostDto } from './dto/update-kost.dto';
-
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -27,8 +25,6 @@ export class KostController {
 
   // Hanya admin yang bisa menambah kost
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
   create(@Body() dto: CreateKostDto) {
     return this.kostService.create(dto);
   }

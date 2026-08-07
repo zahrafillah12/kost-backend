@@ -1,7 +1,7 @@
-import {IsInt,IsNotEmpty,IsOptional,IsString,} from 'class-validator';
+import { IsInt, IsString } from 'class-validator';
+
 export class CreateRoomDto {
   @IsString()
-  @IsNotEmpty()
   namaKamar!: string;
 
   @IsInt()
@@ -12,10 +12,6 @@ export class CreateRoomDto {
 
   @IsString()
   fasilitas!: string;
-
-  @IsOptional()
-  @IsString()
-  foto?: string;
 
   @IsInt()
   kostId!: number;

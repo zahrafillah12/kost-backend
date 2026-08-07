@@ -26,11 +26,11 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
     const user = await this.usersService.create({
-      nama: dto.nama,
-      email: dto.email,
-      password: hashedPassword,
-      role: Role.USER,
-    });
+  nama: dto.nama,
+  email: dto.email,
+  password: hashedPassword,
+  role: dto.role ?? Role.USER,
+});
 
     return {
       message: 'Register berhasil',

@@ -22,8 +22,6 @@ export class RoomController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
   create(@Body() dto: CreateRoomDto) {
     return this.roomService.create(dto);
   }
