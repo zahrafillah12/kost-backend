@@ -28,7 +28,19 @@ export class UsersService {
     });
   }
 
-  async findAll(): Promise<User[]> {
-    return this.prisma.user.findMany();
+  async findAll() {
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        nama: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+    });
   }
 }

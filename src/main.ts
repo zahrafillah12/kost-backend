@@ -19,11 +19,13 @@ async function bootstrap() {
 
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(3000);
+  app.enableCors();
+
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
   
-  console.log(process.env.JWT_SECRET);
-  console.log('http://localhost:3000');
-  console.log('http://localhost:3000/api');
+  console.log(`Server running on port ${port}`);
+  console.log(`Swagger docs available at http://localhost:${port}/api`);
 }
 
 bootstrap();

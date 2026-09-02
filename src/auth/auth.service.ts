@@ -1,4 +1,9 @@
-import {BadRequestException,Injectable,UnauthorizedException,} from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Role } from '@prisma/client';
@@ -68,15 +73,8 @@ export class AuthService {
       throw new UnauthorizedException('Email atau password salah');
     }
 
-    const payload = {
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-    };
-
     return {
       message: 'Login berhasil',
-      access_token: this.jwtService.sign(payload),
       user: {
         id: user.id,
         nama: user.nama,
@@ -127,5 +125,26 @@ export class AuthService {
         role: admin.role,
       },
     };
+  }
+
+  // =========================
+  // GET ME / PROFILE
+  // =========================
+  async getMe(userId: number) {
+    const user = await this.usersService.findById(userId);
+
+    if (!user) {
+      throw new NotFoundException('User tidak ditemukan');
+    }
+
+    const { password, ...result } = user;
+    return result;
+  }
+
+  // =========================
+  // GET ALL USERS (Admin Only)
+  // =========================
+  async getAllUsers() {
+    return this.usersService.findAll();
   }
 }

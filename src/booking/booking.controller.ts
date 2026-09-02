@@ -1,4 +1,13 @@
-import {Body,Controller,Get,Post,Req,UseGuards,} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -6,17 +15,19 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '@prisma/client';
 
+@ApiTags('Booking')
 @Controller('booking')
 export class BookingController {
   constructor(private bookingService: BookingService) {}
 
+  // User bisa melakukan booking tanpa token
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.USER)
-  create(@Req() req, @Body() dto: CreateBookingDto) {
-    return this.bookingService.create(req.user.sub, dto);
+  create(@Body() dto: CreateBookingDto) {
+    return this.bookingService.create(dto.userId, dto);
   }
 
+  // Hanya Admin yang dapat melihat semua booking
+  @ApiBearerAuth()
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
@@ -24,10 +35,9 @@ export class BookingController {
     return this.bookingService.findAll();
   }
 
-  @Get('me')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.USER)
-  myBooking(@Req() req) {
-    return this.bookingService.findMyBooking(req.user.sub);
+  // User bisa melihat booking miliknya berdasarkan userId (tanpa token)
+  @Get('user/:userId')
+  findUserBooking(@Param('userId', ParseIntPipe) userId: number) {
+    return this.bookingService.findMyBooking(userId);
   }
 }

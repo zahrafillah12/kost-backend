@@ -1,4 +1,5 @@
 import {Body,Controller,Delete,Get,Param,ParseIntPipe,Patch,Post,UseGuards,} from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { RoomService } from './room.service';
 import { CreateRoomDto } from './dto/create-room.dto';
@@ -7,6 +8,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 
+@ApiTags('Room')
 @Controller('room')
 export class RoomController {
   constructor(private readonly roomService: RoomService) {}
@@ -21,11 +23,15 @@ export class RoomController {
     return this.roomService.findOne(id);
   }
 
+  @ApiBearerAuth()
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   create(@Body() dto: CreateRoomDto) {
     return this.roomService.create(dto);
   }
 
+  @ApiBearerAuth()
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
@@ -36,6 +42,7 @@ export class RoomController {
     return this.roomService.update(id, dto);
   }
 
+  @ApiBearerAuth()
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
