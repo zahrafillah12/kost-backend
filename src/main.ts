@@ -25,7 +25,7 @@ async function bootstrap() {
   await app.listen(port);
 
   console.log(`Server running on port ${port}`);
-  console.log(`Swagger docs available at: https://812dd00f358c92.lhr.life/api`);
+  console.log(`Swagger docs path: /api`);
 }
 
 bootstrap();
